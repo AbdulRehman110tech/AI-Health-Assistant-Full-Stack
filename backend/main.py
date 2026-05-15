@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.api.routes import health
+from app.api.routes import prediction
 
 # ============================================================
 # 1. CREATE THE FASTAPI APPLICATION
@@ -36,6 +37,7 @@ app.add_middleware(
 # 3. REGISTER ROUTE FILES
 # ============================================================
 app.include_router(health.router)
+app.include_router(prediction.router)
 
 # ============================================================
 # 4. ROOT ENDPOINT
