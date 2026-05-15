@@ -1,0 +1,28 @@
+# ============================================================
+# .gitignore — Files Git Should Never Track
+# ============================================================
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment variables (contains secrets)
+.env
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Saved ML model files (large binaries)
+*.pkl
+*.joblib
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
