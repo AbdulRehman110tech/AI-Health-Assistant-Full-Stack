@@ -10,7 +10,7 @@ from app.core.config import settings
 #from app.api.routes import health, prediction
 from app.api.routes import health, prediction, auth
 from app.api.routes import health, prediction, auth, history
-
+from app.api.routes import health, prediction, auth, history, doctors, reports
 # ============================================================
 # TAGS METADATA
 # Controls section order and descriptions in Swagger UI
@@ -74,6 +74,8 @@ app.include_router(health.router)
 app.include_router(prediction.router)
 app.include_router(auth.router)
 app.include_router(history.router)
+app.include_router(doctors.router)
+app.include_router(reports.router)
 
 # ============================================================
 # ROOT ENDPOINT

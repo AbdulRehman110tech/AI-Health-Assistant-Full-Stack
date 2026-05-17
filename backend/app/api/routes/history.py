@@ -3,7 +3,7 @@
 # Prediction History Routes
 #
 # Endpoints:
-#   GET /api/v1/history/{patient_id} — get patient history
+#   GET /api/v1/history — get current logged-in patient history
 # ============================================================
 
 from fastapi import APIRouter, HTTPException, Depends, status
@@ -24,42 +24,31 @@ router = APIRouter(
 
 
 @router.get(
-    "/history/{patient_id}",
+    "/history",
     status_code=status.HTTP_200_OK,
-    summary="Get Prediction History",
-    description="Returns prediction history for a patient. Only the owner can access their own history.",
+    summary="Get My Prediction History",
+    description="Returns prediction history for the currently logged-in patient. No parameters needed.",
     responses={
         200: {"description": "History returned successfully"},
-        403: {"description": "Access denied"},
-        404: {"description": "Patient not found"},
+        404: {"description": "Patient profile not found"},
         401: {"description": "Not authenticated"},
     },
 )
 def get_history(
-    patient_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Verify patient exists
-    patient = db.query(Patient).filter(Patient.id == patient_id).first()
+    # Automatically find patient linked to logged-in user
+    patient = db.query(Patient).filter(Patient.user_id == current_user.id).first()
 
     if not patient:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"status": "error", "message": f"Patient {patient_id} not found."},
+            detail={"status": "error", "message": "Patient profile not found. Please contact support."},
         )
 
-    # Security check — patient must belong to current logged-in user
-    if patient.user_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"status": "error", "message": "Access denied. You can only view your own history."},
-        )
+    records = get_patient_history(db=db, patient_id=patient.id)
 
-    # Get history records
-    records = get_patient_history(db=db, patient_id=patient_id)
-
-    # Format response
     history = []
     for r in records:
         history.append({
@@ -73,7 +62,7 @@ def get_history(
 
     return {
         "status":     "success",
-        "patient_id": patient_id,
+        "patient_id": patient.id,
         "total":      len(history),
         "history":    history,
     }
