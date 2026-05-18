@@ -1,10 +1,6 @@
 // ============================================================
 // src/api/axios.js
 // Centralized Axios Instance
-//
-// All API calls go through this instance.
-// Base URL points to FastAPI backend.
-// Token is automatically attached if present in localStorage.
 // ============================================================
 
 import axios from 'axios'
@@ -40,10 +36,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // IMPORTANT FIX: 
+    // Check if this request was attempting to log in.
+    const isLoginRequest = error.config?.url?.includes('/auth/token');
+
+    // ONLY redirect/reload if it is a 401 AND it is NOT the login form
+    if (error.response?.status === 401 && !isLoginRequest) {
       localStorage.removeItem('access_token')
       window.location.href = '/login'
     }
+    
+    // Pass the error back down to the component (so Login.jsx can read it)
     return Promise.reject(error)
   }
 )

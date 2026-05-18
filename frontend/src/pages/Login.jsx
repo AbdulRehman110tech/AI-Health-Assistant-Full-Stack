@@ -11,7 +11,7 @@ import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
 export default function Login() {
-  const [form,     setForm]     = useState({ username: '', password: '' })
+  const [form,     setForm]    = useState({ username: '', password: '' })
   const [showPass, setShowPass] = useState(false)
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
@@ -43,7 +43,22 @@ export default function Login() {
       login(res.data.access_token, form.username)
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.detail?.message || 'Invalid username or password.')
+      // Extract backend error message cleanly
+      const errorDetail = err.response?.data?.detail
+      const backendMessage = typeof errorDetail === 'string' ? errorDetail : errorDetail?.message
+      
+      // 1. Check for User Not Found scenario (Status 404 OR specific keywords)
+      const isUserNotFound = 
+        err.response?.status === 404 || 
+        (backendMessage && backendMessage.toLowerCase().includes('not found')) ||
+        (backendMessage && backendMessage.toLowerCase().includes('exist'))
+
+      if (isUserNotFound) {
+        setError('Please register first')
+      } else {
+        // 2. Preserve existing Invalid Password / Generic error behavior
+        setError(backendMessage || 'Invalid username or password.')
+      }
     } finally {
       setLoading(false)
     }
@@ -139,7 +154,7 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Error */}
+          {/* Error Message Container (Preserved styling, strictly outputs correct message) */}
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -8 }}

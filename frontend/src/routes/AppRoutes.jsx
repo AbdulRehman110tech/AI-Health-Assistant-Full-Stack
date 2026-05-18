@@ -1,16 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useAuth }   from '../context/AuthContext'
-import MainLayout    from '../layouts/MainLayout'
-import AuthLayout    from '../layouts/AuthLayout'
-import Dashboard     from '../pages/Dashboard'
-import Predict       from '../pages/Predict'
-import History       from '../pages/History'
-import Doctors       from '../pages/Doctors'
-import Reports       from '../pages/Reports'
-import Reminders     from '../pages/Reminders'
-import Login         from '../pages/Login'
-import Register      from '../pages/Register'
-import NotFound      from '../pages/NotFound'
+import { useAuth }    from '../context/AuthContext'
+import MainLayout     from '../layouts/MainLayout'
+import AuthLayout     from '../layouts/AuthLayout'
+import Dashboard      from '../pages/Dashboard'
+import Predict        from '../pages/Predict'
+import History        from '../pages/History'
+import Doctors        from '../pages/Doctors'
+import Reports        from '../pages/Reports'
+import Reminders      from '../pages/Reminders'
+import Profile        from '../pages/Profile'          // ← Phase 3G
+import Login          from '../pages/Login'
+import Register       from '../pages/Register'
+import NotFound       from '../pages/NotFound'
 
 function ProtectedRoute({ children }) {
   const { isAuth } = useAuth()
@@ -38,6 +39,7 @@ export default function AppRoutes() {
         <Route path="/doctors"    element={<Doctors />} />
         <Route path="/reports"    element={<Reports />} />
         <Route path="/reminders"  element={<Reminders />} />
+        <Route path="/profile"    element={<Profile />} />   {/* ← Phase 3G */}
       </Route>
 
       <Route path="*" element={<NotFound />} />

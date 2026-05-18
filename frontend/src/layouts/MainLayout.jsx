@@ -4,18 +4,20 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, Activity, History,
   UserCheck, FileText, Bell,
-  Menu, Heart, LogOut, User, X
+  Menu, Heart, LogOut, User, X,
+  UserCircle,                          // ← Phase 3G
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import ChatBot from '../components/ChatBot'
 
 const navItems = [
-  { path: '/dashboard', label: 'Dashboard',   icon: LayoutDashboard },
-  { path: '/predict',   label: 'Prediction',  icon: Activity },
-  { path: '/doctors',   label: 'Doctors',     icon: UserCheck },
-  { path: '/reports',   label: 'Reports',     icon: FileText },
-  { path: '/history',   label: 'History',     icon: History },
-  { path: '/reminders', label: 'Reminders',   icon: Bell },
+  { path: '/dashboard', label: 'Dashboard',      icon: LayoutDashboard },
+  { path: '/predict',   label: 'Prediction',     icon: Activity },
+  { path: '/doctors',   label: 'Doctors',        icon: UserCheck },
+  { path: '/reports',   label: 'Reports',        icon: FileText },
+  { path: '/history',   label: 'History',        icon: History },
+  { path: '/reminders', label: 'Reminders',      icon: Bell },
+  { path: '/profile',   label: 'Personal Info',  icon: UserCircle },   // ← Phase 3G
 ]
 
 function SidebarContent({ onNav }) {
@@ -58,7 +60,7 @@ function SidebarContent({ onNav }) {
               border:      isActive ? '1px solid rgba(0,212,255,0.2)' : '1px solid transparent',
             })}
           >
-            <Icon size={16} strokeWidth={isActive => isActive ? 2.5 : 2} />
+            <Icon size={16} />
             {label}
           </NavLink>
         ))}
@@ -121,173 +123,81 @@ export default function MainLayout() {
   const pageTitle = location.pathname.replace('/', '') || 'dashboard'
 
   return (
-  <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#080B12' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#080B12' }}>
 
-    {/* Mobile overlay */}
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.7)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 40
-          }}
-        />
-      )}
-    </AnimatePresence>
+      {/* Mobile overlay */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', zIndex: 40 }}
+          />
+        )}
+      </AnimatePresence>
 
-    {/* Mobile Sidebar */}
-    <motion.aside
-      initial={{ x: '-100%' }}
-      animate={{ x: open ? 0 : '-100%' }}
-      transition={{ type: 'tween', duration: 0.22 }}
-      style={{
-        ...sidebarBase,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        zIndex: 50
-      }}
-    >
-      <button
-        onClick={() => setOpen(false)}
-        style={{
-          position: 'absolute',
-          top: '16px',
-          right: '16px',
-          background: 'none',
-          border: 'none',
-          color: '#4A5568',
-          cursor: 'pointer',
-          display: 'flex',
-        }}
+      {/* Mobile Sidebar */}
+      <motion.aside
+        initial={{ x: '-100%' }}
+        animate={{ x: open ? 0 : '-100%' }}
+        transition={{ type: 'tween', duration: 0.22 }}
+        style={{ ...sidebarBase, position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50 }}
       >
-        <X size={18} />
-      </button>
-
-      <SidebarContent onNav={() => setOpen(false)} />
-    </motion.aside>
-
-    {/* Desktop Sidebar */}
-    <aside style={{ ...sidebarBase, flexShrink: 0 }}>
-      <SidebarContent />
-    </aside>
-
-    {/* Main */}
-    <div
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        minWidth: 0,
-        position: 'relative',
-      }}
-    >
-
-      {/* Topbar */}
-      <header
-        style={{
-          height: '58px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 24px',
-          gap: '14px',
-          background: 'rgba(8,11,18,0.85)',
-          backdropFilter: 'blur(16px)',
-          flexShrink: 0,
-        }}
-      >
-        {/* Mobile menu button */}
         <button
-          onClick={() => setOpen(true)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#8B95A8',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center'
-          }}
+          onClick={() => setOpen(false)}
+          style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', color: '#4A5568', cursor: 'pointer', display: 'flex' }}
         >
-          <Menu size={20} />
+          <X size={18} />
         </button>
+        <SidebarContent onNav={() => setOpen(false)} />
+      </motion.aside>
 
-        {/* Page title */}
-        <span
-          style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: '15px',
-            fontWeight: 700,
-            color: '#F0F4FF',
-            textTransform: 'capitalize',
-          }}
-        >
-          {pageTitle}
-        </span>
+      {/* Desktop Sidebar */}
+      <aside style={{ ...sidebarBase, flexShrink: 0 }}>
+        <SidebarContent />
+      </aside>
 
-        {/* Right side */}
-        <div
-          style={{
-            marginLeft: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px'
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
+      {/* Main */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, position: 'relative' }}>
+
+        {/* Topbar */}
+        <header style={{
+          height: '58px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+          display: 'flex', alignItems: 'center', padding: '0 24px', gap: '14px',
+          background: 'rgba(8,11,18,0.85)', backdropFilter: 'blur(16px)', flexShrink: 0,
+        }}>
+          <button
+            onClick={() => setOpen(true)}
+            style={{ background: 'none', border: 'none', color: '#8B95A8', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
           >
-            <div
-              style={{
-                width: '7px',
-                height: '7px',
-                borderRadius: '50%',
-                background: '#00FF87',
-                boxShadow: '0 0 8px rgba(0,255,135,0.7)',
-              }}
-            />
-            <span style={{ fontSize: '12px', color: '#8B95A8' }}>
-              Live
-            </span>
+            <Menu size={20} />
+          </button>
+          <span style={{ fontFamily: 'Syne, sans-serif', fontSize: '15px', fontWeight: 700, color: '#F0F4FF', textTransform: 'capitalize' }}>
+            {pageTitle}
+          </span>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00FF87', boxShadow: '0 0 8px rgba(0,255,135,0.7)' }} />
+              <span style={{ fontSize: '12px', color: '#8B95A8' }}>Live</span>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Page Content */}
-      <main
-        style={{
-          flex: 1,
-          overflow: 'auto',
-          padding: '28px 24px',
-          position: 'relative',
-        }}
-      >
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-        >
-          <Outlet />
-        </motion.div>
-      </main>
+        {/* Page Content */}
+        <main style={{ flex: 1, overflow: 'auto', padding: '28px 24px', position: 'relative' }}>
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+          >
+            <Outlet />
+          </motion.div>
+        </main>
 
-      {/* Floating AI Assistant */}
-      <ChatBot />
-
+        {/* Floating AI Assistant */}
+        <ChatBot />
+      </div>
     </div>
-  </div>
-)}
+  )
+}

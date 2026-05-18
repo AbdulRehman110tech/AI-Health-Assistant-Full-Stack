@@ -58,10 +58,12 @@ def login_user(db: Session, username: str, password: str) -> str:
     user = db.query(User).filter(User.username == username).first()
 
     if not user:
-        raise ValueError("Invalid username or password.")
+        # CHANGED: Explicitly state the user is missing so the frontend can catch "not found"
+        raise ValueError("User not found.")
 
     if not verify_password(password, user.hashed_password):
-        raise ValueError("Invalid username or password.")
+        # CHANGED: Explicitly state the password is wrong
+        raise ValueError("Invalid password.")
 
     token = create_access_token(data={"sub": user.username})
 

@@ -5,7 +5,7 @@
 
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Activity, UserCheck, FileText, History, Bell, Brain } from 'lucide-react'
+import { Activity, UserCheck, FileText, History, Bell, Brain, UserCircle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const actions = [
@@ -69,16 +69,27 @@ const actions = [
     iconColor:   '#38BDF8',
     glow:        'rgba(56, 189, 248, 0.15)',
   },
+  // ── Phase 3G addition ──────────────────────────────────
+  {
+    path:        '/profile',
+    label:       'Personal Info',
+    description: 'View your account details and manage your profile',
+    icon:        UserCircle,
+    gradient:    'linear-gradient(135deg, #34D39922, #34D39908)',
+    border:      'rgba(52, 211, 153, 0.2)',
+    iconColor:   '#34D399',
+    glow:        'rgba(52, 211, 153, 0.15)',
+  },
 ]
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } }
+  show: { transition: { staggerChildren: 0.08 } },
 }
 
 const item = {
   hidden: { opacity: 0, y: 24 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
+  show:   { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 }
 
 export default function Dashboard() {
@@ -97,18 +108,13 @@ export default function Dashboard() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
           <div style={{
             width: '10px', height: '10px', borderRadius: '50%',
-            background: '#00FF87',
-            boxShadow: '0 0 12px rgba(0,255,135,0.7)',
+            background: '#00FF87', boxShadow: '0 0 12px rgba(0,255,135,0.7)',
           }} />
           <span style={{ fontSize: '13px', color: '#00FF87', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
             System Online
           </span>
         </div>
-        <h1 style={{
-          fontSize: '32px', fontFamily: 'Syne, sans-serif',
-          fontWeight: 800, color: '#F0F4FF',
-          marginBottom: '8px',
-        }}>
+        <h1 style={{ fontSize: '32px', fontFamily: 'Syne, sans-serif', fontWeight: 800, color: '#F0F4FF', marginBottom: '8px' }}>
           Welcome back{username ? `, ${username}` : ''} 👋
         </h1>
         <p style={{ color: '#8B95A8', fontSize: '15px' }}>
@@ -118,14 +124,8 @@ export default function Dashboard() {
 
       {/* Action Cards Grid */}
       <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '16px',
-        }}
+        variants={container} initial="hidden" animate="show"
+        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}
       >
         {actions.map((action) => {
           const Icon = action.icon
@@ -137,48 +137,28 @@ export default function Dashboard() {
               whileHover={{ scale: 1.02, y: -4 }}
               whileTap={{ scale: 0.98 }}
               style={{
-                background:    action.gradient,
-                border:        `1px solid ${action.border}`,
-                borderRadius:  '16px',
-                padding:       '24px',
-                cursor:        'pointer',
-                backdropFilter:'blur(12px)',
-                transition:    'box-shadow 0.2s ease',
-                position:      'relative',
-                overflow:      'hidden',
+                background: action.gradient, border: `1px solid ${action.border}`,
+                borderRadius: '16px', padding: '24px', cursor: 'pointer',
+                backdropFilter: 'blur(12px)', transition: 'box-shadow 0.2s ease',
+                position: 'relative', overflow: 'hidden',
               }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = `0 8px 32px ${action.glow}`}
               onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
             >
-              {/* Icon */}
               <div style={{
-                width: '44px', height: '44px',
-                background: `${action.iconColor}18`,
-                border: `1px solid ${action.iconColor}30`,
-                borderRadius: '12px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: '16px',
+                width: '44px', height: '44px', background: `${action.iconColor}18`,
+                border: `1px solid ${action.iconColor}30`, borderRadius: '12px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px',
               }}>
                 <Icon size={20} color={action.iconColor} strokeWidth={2} />
               </div>
-
-              {/* Text */}
-              <h3 style={{
-                fontFamily: 'Syne, sans-serif',
-                fontSize: '15px', fontWeight: 700,
-                color: '#F0F4FF', marginBottom: '6px',
-              }}>
+              <h3 style={{ fontFamily: 'Syne, sans-serif', fontSize: '15px', fontWeight: 700, color: '#F0F4FF', marginBottom: '6px' }}>
                 {action.label}
               </h3>
               <p style={{ fontSize: '13px', color: '#8B95A8', lineHeight: 1.5 }}>
                 {action.description}
               </p>
-
-              {/* Arrow */}
-              <div style={{
-                position: 'absolute', bottom: '20px', right: '20px',
-                color: action.iconColor, fontSize: '18px', opacity: 0.6,
-              }}>
+              <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: action.iconColor, fontSize: '18px', opacity: 0.6 }}>
                 →
               </div>
             </motion.div>

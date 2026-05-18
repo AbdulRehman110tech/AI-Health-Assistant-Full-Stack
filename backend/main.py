@@ -13,6 +13,17 @@ from app.api.routes import health, prediction, auth, history
 from app.api.routes import health, prediction, auth, history, doctors, reports
 from app.api.routes import health, prediction, auth, history, doctors, reports, reminders
 from app.api.routes import health, prediction, auth, history, doctors, reports, reminders, chatbot
+from app.api.routes import (
+    health,
+    prediction,
+    auth,
+    history,
+    doctors,
+    reports,
+    reminders,
+    chatbot,
+    personal_info,   # ← Phase 3G addition
+)
 
 # ============================================================
 # TAGS METADATA
@@ -81,7 +92,7 @@ app.include_router(doctors.router)
 app.include_router(reports.router)
 app.include_router(reminders.router)
 app.include_router(chatbot.router)
-
+app.include_router(personal_info.router)
 # ============================================================
 # ROOT ENDPOINT
 # ============================================================
